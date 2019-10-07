@@ -1,9 +1,7 @@
 # 7guis-capi
-### _Eric Lorenzana_
 
-This is a project to do ... something.
+The 7GUIs challenge implemented in LispWorks CAPI.
 
 ## License
 
 The Unlicense
-
