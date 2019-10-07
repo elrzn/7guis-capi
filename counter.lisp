@@ -20,7 +20,10 @@
     :text (write-to-string value)
     :enabled nil
     :accessor counter-text)
-   (increase-button capi:push-button :text "Count" :callback #'increase-counter))
+   (increase-button
+    capi:push-button
+    :text "Count"
+    :callback #'increase-counter))
   (:layouts (main-layout capi:row-layout '(counter-text increase-button)))
   (:default-initargs :title "Counter")
   (:documentation
