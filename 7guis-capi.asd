@@ -7,5 +7,5 @@
   :version "0.0.1"
   :serial t
   :components ((:file "package")
-               (:file "7guis-capi")
-               (:file "counter")))
+               (:file "counter")
+               (:file "7guis-capi")))
