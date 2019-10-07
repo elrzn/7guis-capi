@@ -15,7 +15,11 @@
     :accessor counter-value
     :documentation "The counter value that will be increased."))
   (:panes
-   (counter-text capi:text-input-pane :text (write-to-string value) :accessor counter-text)
+   (counter-text
+    capi:text-input-pane
+    :text (write-to-string value)
+    :enabled nil
+    :accessor counter-text)
    (increase-button capi:push-button :text "Count" :callback #'increase-counter))
   (:layouts (main-layout capi:row-layout '(counter-text increase-button)))
   (:default-initargs :title "Counter")
