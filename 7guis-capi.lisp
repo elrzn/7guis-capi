@@ -10,8 +10,14 @@
             :callback (lambda (data interface)
                         (declare (ignore data interface))
                         (capi:display
-                         (make-instance 'counter)))))
-  (:layouts (main capi:column-layout '(counter)))
+                         (make-instance 'counter))))
+   (temperature-converter capi:push-button
+                          :text "TempConv"
+                          :callback (lambda (data interface)
+                                      (declare (ignore data interface))
+                                      (capi:display
+                                       (make-instance 'temperature-converter)))))
+  (:layouts (main capi:column-layout '(counter temperature-converter)))
   (:default-initargs :title "7GUIs"))
 
 (defun main ()

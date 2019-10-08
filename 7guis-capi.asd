@@ -8,4 +8,5 @@
   :serial t
   :components ((:file "package")
                (:file "counter")
+               (:file "temperature-converter")
                (:file "7guis-capi")))
