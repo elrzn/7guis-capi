@@ -21,10 +21,10 @@ C = (F - 32) * (5/9)"
 (defclass temperature-pane-fahrenheit (temperature-pane) ())
 
 (defun my-callback (new-text pane interface text-length)
-  (declare (ignore text-length))
-  (let ((temperature (nth-value 0 (parse-integer new-text))))
-    (when temperature
-      (update-other temperature pane interface))))
+  (when (> text-length 0)
+    (let ((temperature (nth-value 0 (parse-integer new-text))))
+      (when temperature
+        (update-other temperature pane interface)))))
 
 (defgeneric update-other (temperature pane interface))
 
