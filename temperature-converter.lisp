@@ -14,27 +14,41 @@ F = C * (9/5) + 32"
 C = (F - 32) * (5/9)"
   (* (- f 32) (/ 5 9)))
 
+(defclass temperature-pane (capi:text-input-pane) ())
+
+(defclass temperature-pane-celsius (temperature-pane) ())
+
+(defclass temperature-pane-fahrenheit (temperature-pane) ())
+
+(defun my-callback (new-text pane interface text-length)
+  (declare (ignore text-length))
+  (let ((temperature (nth-value 0 (parse-integer new-text))))
+    (when temperature
+      (update-other temperature pane interface))))
+
+(defgeneric update-other (temperature pane interface))
+
+(defmethod update-other (temperature (pane temperature-pane-celsius) interface)
+  (let ((other-pane (temperature-converter-pane-fahrenheit interface)))
+    (setf (capi:text-input-pane-text other-pane)
+          (write-to-string (celsius->fahrenheit temperature)))))
+
+(defmethod update-other (temperature (pane temperature-pane-fahrenheit) interface)
+  (let ((other-pane (temperature-converter-pane-celsius interface)))
+    (setf (capi:text-input-pane-text other-pane)
+          (write-to-string (fahrenheit->celsius temperature)))))
+
 (capi:define-interface temperature-converter ()
   ()
   (:panes
-   (celsius capi:text-input-pane
+   (celsius temperature-pane-celsius
             :title "Celsius"
-            :change-callback #'(lambda (new-text pane interface text-length)
-                                 (declare (ignore pane interface text-length))
-                                 (when (> (length new-text) 0)
-                                   (let ((c (nth-value 0 (parse-integer new-text))))
-                                     (when c
-                                       (setf (capi:text-input-pane-text fahrenheit)
-                                             (write-to-string (celsius->fahrenheit c))))))))
-   (fahrenheit capi:text-input-pane
+            :accessor temperature-converter-pane-celsius
+            :change-callback #'my-callback)
+   (fahrenheit temperature-pane-fahrenheit
                :title "Fahrenheit"
-               :change-callback #'(lambda (new-text pane interface text-length)
-                                    (declare (ignore pane interface text-length))
-                                    (when (> (length new-text) 0)
-                                      (let ((f (nth-value 0 (parse-integer new-text))))
-                                        (when f
-                                          (setf (capi:text-input-pane-text celsius)
-                                                (write-to-string (fahrenheit->celsius f)))))))))
+               :accessor temperature-converter-pane-fahrenheit
+               :change-callback #'my-callback))
   (:layouts
    (main capi:row-layout '(celsius fahrenheit)))
   (:default-initargs :title "TempConv"))
