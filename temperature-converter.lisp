@@ -52,6 +52,3 @@ C = (F - 32) * (5/9)"
   (:layouts
    (main capi:row-layout '(celsius fahrenheit)))
   (:default-initargs :title "TempConv"))
-
-(defun foo ()
-  (capi:display (make-instance 'temperature-converter)))
