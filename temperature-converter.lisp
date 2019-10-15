@@ -20,20 +20,20 @@ C = (F - 32) * (5/9)"
 
 (defclass temperature-pane-fahrenheit (temperature-pane) ())
 
-(defun my-callback (new-text pane interface text-length)
+(defun temperature-pane-update (new-text pane interface text-length)
   (when (> text-length 0)
     (let ((temperature (nth-value 0 (parse-integer new-text))))
       (when temperature
-        (update-other temperature pane interface)))))
+        (temperature-pane-update-other pane interface temperature)))))
 
-(defgeneric update-other (temperature pane interface))
+(defgeneric temperature-pane-update-other (temperature pane interface))
 
-(defmethod update-other (temperature (pane temperature-pane-celsius) interface)
+(defmethod temperature-pane-update-other ((pane temperature-pane-celsius) interface temperature)
   (let ((other-pane (temperature-converter-pane-fahrenheit interface)))
     (setf (capi:text-input-pane-text other-pane)
           (write-to-string (celsius->fahrenheit temperature)))))
 
-(defmethod update-other (temperature (pane temperature-pane-fahrenheit) interface)
+(defmethod temperature-pane-update-other ((pane temperature-pane-fahrenheit) interface temperature)
   (let ((other-pane (temperature-converter-pane-celsius interface)))
     (setf (capi:text-input-pane-text other-pane)
           (write-to-string (fahrenheit->celsius temperature)))))
@@ -44,11 +44,11 @@ C = (F - 32) * (5/9)"
    (celsius temperature-pane-celsius
             :title "Celsius"
             :accessor temperature-converter-pane-celsius
-            :change-callback #'my-callback)
+            :change-callback #'temperature-pane-update)
    (fahrenheit temperature-pane-fahrenheit
                :title "Fahrenheit"
                :accessor temperature-converter-pane-fahrenheit
-               :change-callback #'my-callback))
+               :change-callback #'temperature-pane-update))
   (:layouts
    (main capi:row-layout '(celsius fahrenheit)))
   (:default-initargs :title "TempConv"))
