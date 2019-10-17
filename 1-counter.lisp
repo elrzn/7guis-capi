@@ -1,4 +1,4 @@
-;;;; counter.lisp
+;;;; 1-counter.lisp
 
 (in-package #:7guis-capi)
 
