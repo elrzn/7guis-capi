@@ -31,9 +31,8 @@ C = (F - 32) * (5/9)"
 
 (defun temperature-pane-callback (new-text pane interface text-length)
   (declare (ignore text-length))
-  (let ((temperature (nth-value 0 (parse-integer new-text :junk-allowed t))))
-    (when temperature
-      (temperature-pane-update-other pane interface temperature))))
+  (when-let ((temperature (nth-value 0 (parse-integer new-text :junk-allowed t))))
+    (temperature-pane-update-other pane interface temperature)))
 
 (defgeneric temperature-pane-update-other (pane interface temperature))
 
