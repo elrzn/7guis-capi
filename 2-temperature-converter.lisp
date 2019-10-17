@@ -3,15 +3,11 @@
 (in-package #:7guis-capi)
 
 (defun celsius->fahrenheit (c)
-  "Convert from Celsius to Fahrenheit.
-
-F = C * (9/5) + 32"
+  "Convert from Celsius to Fahrenheit."
   (+ (* c (/ 9 5)) 32))
 
 (defun fahrenheit->celsius (f)
-  "Convert from Fahrenheit to Celsius.
-
-C = (F - 32) * (5/9)"
+  "Convert from Fahrenheit to Celsius."
   (* (- f 32) (/ 5 9)))
 
 (defclass temperature-pane (capi:text-input-pane) ())
