@@ -16,8 +16,14 @@
                           :callback (lambda (data interface)
                                       (declare (ignore data interface))
                                       (capi:display
-                                       (make-instance 'temperature-converter)))))
-  (:layouts (main capi:column-layout '(counter temperature-converter)))
+                                       (make-instance 'temperature-converter))))
+   (flight-booker capi:push-button
+                  :text "Flight Booker"
+                  :callback (lambda (data interface)
+                              (declare (ignore data interface))
+                              (capi:display
+                               (make-instance 'flight-booker)))))
+  (:layouts (main capi:column-layout '(counter temperature-converter flight-booker)))
   (:default-initargs :title "7GUIs"))
 
 (defun main ()
