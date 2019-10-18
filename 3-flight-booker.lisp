@@ -2,15 +2,21 @@
 
 (in-package #:7guis-capi)
 
-(defun string->date (s)
-  (when (= 8 (length s))
-    (let ((tokens (uiop/utility:split-string s :separator ".")))
+(declaim (ftype (function (string) fixnum) string->date))
+
+(defun string->date (given-string)
+  (declare (string given-string))
+  (when (= 8 (length given-string))
+    (let ((tokens (uiop/utility:split-string given-string :separator ".")))
       (when (= 3 (length tokens))
         (destructuring-bind (day month year)
             (mapcar #'parse-integer tokens)
           (encode-universal-time 0 0 0 day month year))))))
 
+(declaim (ftype (function (fixnum) string) date->string))
+
 (defun date->string (given-date)
+  (declare (fixnum given-date))
   (multiple-value-bind
       (second minute hour day month year day-of-week dst-p tz)
       (decode-universal-time given-date)
