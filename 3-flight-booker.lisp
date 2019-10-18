@@ -23,18 +23,24 @@
     (declare (ignore second minute hour day-of-week dst-p tz))
     (format nil "~d.~d.~d" day month (abs (- 2000 year)))))
 
+(defclass flight-booker-date (capi:text-input-pane) ())
+
+(defmethod get-date ((pane flight-booker-date))
+  (string->date (capi:text-input-pane-text pane)))
+
 (defun change-callback (new-text pane interface text-length)
-  (declare (ignore interface text-length))
-  (setf (capi:simple-pane-background pane) (if (string->date new-text) nil :red)))
+  (declare (ignore new-text interface text-length))
+  (setf (capi:simple-pane-background pane)
+        (if (get-date pane) :white :red)))
 
 (capi:define-interface flight-booker ()
   ()
   (:panes
    (ticket-type capi:option-pane :items '("one-way flight" "return flight"))
-   (start-date capi:text-input-pane
+   (start-date flight-booker-date
                :text (date->string (get-universal-time))
                :change-callback #'change-callback)
-   (arrival-date capi:text-input-pane
+   (arrival-date flight-booker-date
                  :text ""
                  :change-callback #'change-callback
                  :enabled nil)
