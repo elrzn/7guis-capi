@@ -47,18 +47,20 @@
         (dates-okay-p interface)))
 
 (defun flight-booker-ticket-selection-callback (ticket-type interface)
+  (declare (ignore ticket-type)) ;; We have a method for this.
   (let ((pane (flight-booker-arrival-date interface)))
     ;; Disable arrival date input field if the user selected a single
     ;; ticket.
     (setf (capi:simple-pane-enabled pane)
-          (not (eq ticket-type (cdr (assoc :single +flight-ticket-options+)))))))
+          (return-ticket-p interface))))
 
 (capi:define-interface flight-booker ()
   ()
   (:panes
    (ticket-type capi:option-pane
                 :items (mapcar #'cdr +flight-ticket-options+)
-                :selection-callback #'flight-booker-ticket-selection-callback)
+                :selection-callback #'flight-booker-ticket-selection-callback
+                :reader flight-booker-ticket-type)
    (start-date flight-booker-date
                :change-callback #'flight-booker-date-change-callback
                :reader flight-booker-start-date)
@@ -72,6 +74,14 @@
   (:layouts
    (main capi:column-layout '(ticket-type start-date arrival-date book)))
   (:default-initargs :title "Flight Booker"))
+
+(defmethod single-ticket-p ((interface flight-booker))
+  (let ((ticket-type (flight-booker-ticket-type interface)))
+    (eq (capi:choice-selected-item ticket-type)
+        (cdr (assoc :single +flight-ticket-options+)))))
+
+(defmethod return-ticket-p ((interface flight-booker))
+  (not (single-ticket-p interface)))
 
 (defmethod dates-okay-p ((interface flight-booker))
   (let ((start-date (flight-booker-start-date interface))
