@@ -84,9 +84,7 @@
   (not (single-ticket-p interface)))
 
 (defmethod dates-okay-p ((interface flight-booker))
-  (let ((start-date (flight-booker-start-date interface))
-        (arrival-date (flight-booker-arrival-date interface)))
-    (when-let ((start-date-date (get-date start-date))
-               (arrival-date-date (get-date arrival-date)))
-      (>= arrival-date-date start-date-date))))
-
+  (when-let ((start-date (get-date (flight-booker-start-date interface))))
+    (if (single-ticket-p interface)
+        t
+      (>= (get-date (flight-booker-arrival-date interface)) start-date))))
