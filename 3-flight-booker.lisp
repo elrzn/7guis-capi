@@ -4,10 +4,6 @@
 
 (declaim (ftype (function (string) fixnum) string->date))
 
-(defparameter +flight-ticket-options+
-  '((:single . "one way flight")
-    (:return . "return flight")))
-
 (defun string->date (given-string)
   (declare (string given-string))
   (when (= 8 (length given-string))
@@ -26,6 +22,10 @@
       (decode-universal-time given-date)
     (declare (ignore second minute hour day-of-week dst-p tz))
     (format nil "~d.~d.~d" day month (abs (- 2000 year)))))
+
+(defparameter +flight-ticket-options+
+  '((:single . "one way flight")
+    (:return . "return flight")))
 
 (defclass flight-booker-date (capi:text-input-pane) ())
 
