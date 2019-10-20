@@ -5,6 +5,7 @@
 (declaim (ftype (function (string) fixnum) string->date))
 
 (defun string->date (given-string)
+  "From a dd.mm.yy string, return a valid date."
   (declare (string given-string))
   (when (= 8 (length given-string))
     (let ((tokens (uiop/utility:split-string given-string :separator ".")))
@@ -16,6 +17,7 @@
 (declaim (ftype (function (fixnum) string) date->string))
 
 (defun date->string (given-date)
+  "From a date, return a string representation with format dd.mm.yy."
   (declare (fixnum given-date))
   (multiple-value-bind
       (second minute hour day month year day-of-week dst-p tz)
@@ -91,14 +93,18 @@ booking button."
         (dates-okay-p interface)))
 
 (defmethod single-ticket-p ((interface flight-booker))
+  "Return true if the user selected a single flight ticket."
   (let ((ticket-type (flight-booker-ticket-type interface)))
     (eq (capi:choice-selected-item ticket-type)
         (cdr (assoc :single +flight-ticket-options+)))))
 
 (defmethod return-ticket-p ((interface flight-booker))
+  "Return true if the user selected a return flight ticket."
   (not (single-ticket-p interface)))
 
 (defmethod dates-okay-p ((interface flight-booker))
+  "Check whether dates are correct and in the case of a return flight
+ticket, if the arrival is set in the future."
   (when-let ((start-date (get-date (flight-booker-start-date interface))))
     (if (single-ticket-p interface)
         t
