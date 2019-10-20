@@ -41,10 +41,7 @@
   ;; content evaluates to an invalid date.
   (setf (capi:simple-pane-background pane)
         (if (get-date pane) :white :red))
-  ;; Check if all dates are okay, and if that's the case, enable the
-  ;; booking button.
-  (setf (capi:simple-pane-enabled (flight-booker-book interface))
-        (dates-okay-p interface)))
+  (check-booking interface))
 
 (defun flight-booker-ticket-selection-callback (ticket-type interface)
   (declare (ignore ticket-type)) ;; We have a method for this.
@@ -52,7 +49,8 @@
     ;; Disable arrival date input field if the user selected a single
     ;; ticket.
     (setf (capi:simple-pane-enabled pane)
-          (return-ticket-p interface))))
+          (return-ticket-p interface)))
+  (check-booking interface))
 
 (defun flight-booker-book-callback (data interface)
   (declare (ignore data))
@@ -85,6 +83,12 @@
   (:layouts
    (main capi:column-layout '(ticket-type start-date arrival-date book)))
   (:default-initargs :title "Flight Booker"))
+
+(defmethod check-booking ((interface flight-booker))
+  "Check if all dates are okay, and if that's the case, enable the
+booking button."
+  (setf (capi:simple-pane-enabled (flight-booker-book interface))
+        (dates-okay-p interface)))
 
 (defmethod single-ticket-p ((interface flight-booker))
   (let ((ticket-type (flight-booker-ticket-type interface)))
