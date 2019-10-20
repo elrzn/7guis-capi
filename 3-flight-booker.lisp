@@ -29,6 +29,9 @@
 
 (defclass flight-booker-date (capi:text-input-pane) ())
 
+(defmethod initialize-instance :after ((self flight-booker-date) &key)
+  (setf (capi:text-input-pane-text self) (date->string (get-universal-time))))
+
 (defmethod get-date ((pane flight-booker-date))
   (string->date (capi:text-input-pane-text pane)))
 
@@ -51,10 +54,8 @@
                 :items (mapcar #'cdr +flight-ticket-options+)
                 :selection-callback #'flight-booker-ticket-selection-callback)
    (start-date flight-booker-date
-               :text (date->string (get-universal-time))
                :change-callback #'flight-booker-date-change-callback)
    (arrival-date flight-booker-date
-                 :text ""
                  :change-callback #'flight-booker-date-change-callback
                  :accessor flight-booker-arrival-date
                  :enabled nil)
