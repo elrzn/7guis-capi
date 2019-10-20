@@ -54,6 +54,16 @@
     (setf (capi:simple-pane-enabled pane)
           (return-ticket-p interface))))
 
+(defun flight-booker-book-callback (data interface)
+  (declare (ignore data))
+  (capi:display-message "Reserved a ~a on ~a."
+                        (capi:choice-selected-item (flight-booker-ticket-type interface))
+                        (if (single-ticket-p interface)
+                            (date->string (get-date (flight-booker-start-date interface)))
+                          (format nil "~a and ~a"
+                                  (date->string (get-date (flight-booker-start-date interface)))
+                                  (date->string (get-date (flight-booker-arrival-date interface)))))))
+
 (capi:define-interface flight-booker ()
   ()
   (:panes
@@ -70,6 +80,7 @@
                  :enabled nil)
    (book capi:push-button
          :text "Book"
+         :callback #'flight-booker-book-callback
          :accessor flight-booker-book))
   (:layouts
    (main capi:column-layout '(ticket-type start-date arrival-date book)))
