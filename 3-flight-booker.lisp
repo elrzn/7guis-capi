@@ -98,4 +98,5 @@
   (when-let ((start-date (get-date (flight-booker-start-date interface))))
     (if (single-ticket-p interface)
         t
-      (>= (get-date (flight-booker-arrival-date interface)) start-date))))
+      (when-let ((arrival-date (get-date (flight-booker-arrival-date interface))))
+        (>= arrival-date start-date)))))
