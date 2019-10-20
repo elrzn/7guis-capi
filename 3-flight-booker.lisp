@@ -4,7 +4,9 @@
 
 (declaim (ftype (function (string) fixnum) string->date))
 
-(defparameter +flight-ticket-options+ '(one-way-flight return-flight))
+(defparameter +flight-ticket-options+
+  '((:single . "one way flight")
+    (:return . "return flight")))
 
 (defun string->date (given-string)
   (declare (string given-string))
@@ -37,14 +39,16 @@
 
 (defun flight-booker-ticket-selection-callback (ticket-type interface)
   (let ((pane (flight-booker-arrival-date interface)))
-    (setf (capi:simple-pane-enabled pane) (not (eq ticket-type 'one-way-flight)))))
+    ;; Disable arrival date input field if the user selected a single
+    ;; ticket.
+    (setf (capi:simple-pane-enabled pane)
+          (not (eq ticket-type (cdr (assoc :single +flight-ticket-options+)))))))
 
 (capi:define-interface flight-booker ()
   ()
   (:panes
    (ticket-type capi:option-pane
-                :items +flight-ticket-options+
-                :print-function #'string-downcase
+                :items (mapcar #'cdr +flight-ticket-options+)
                 :selection-callback #'flight-booker-ticket-selection-callback)
    (start-date flight-booker-date
                :text (date->string (get-universal-time))
