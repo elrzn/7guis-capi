@@ -37,6 +37,8 @@
 
 (defun flight-booker-date-change-callback (new-text pane interface text-length)
   (declare (ignore new-text interface text-length))
+  ;; Set a red background for the flight booker date pane if its
+  ;; content evaluates to an invalid date.
   (setf (capi:simple-pane-background pane)
         (if (get-date pane) :white :red)))
 
