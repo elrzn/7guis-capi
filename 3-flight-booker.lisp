@@ -36,11 +36,15 @@
   (string->date (capi:text-input-pane-text pane)))
 
 (defun flight-booker-date-change-callback (new-text pane interface text-length)
-  (declare (ignore new-text interface text-length))
+  (declare (ignore new-text text-length))
   ;; Set a red background for the flight booker date pane if its
   ;; content evaluates to an invalid date.
   (setf (capi:simple-pane-background pane)
-        (if (get-date pane) :white :red)))
+        (if (get-date pane) :white :red))
+  ;; Check if all dates are okay, and if that's the case, enable the
+  ;; booking button.
+  (setf (capi:simple-pane-enabled (flight-booker-book interface))
+        (dates-okay-p interface)))
 
 (defun flight-booker-ticket-selection-callback (ticket-type interface)
   (let ((pane (flight-booker-arrival-date interface)))
@@ -56,12 +60,23 @@
                 :items (mapcar #'cdr +flight-ticket-options+)
                 :selection-callback #'flight-booker-ticket-selection-callback)
    (start-date flight-booker-date
-               :change-callback #'flight-booker-date-change-callback)
+               :change-callback #'flight-booker-date-change-callback
+               :reader flight-booker-start-date)
    (arrival-date flight-booker-date
                  :change-callback #'flight-booker-date-change-callback
                  :accessor flight-booker-arrival-date
                  :enabled nil)
-   (book capi:push-button :text "Book"))
+   (book capi:push-button
+         :text "Book"
+         :accessor flight-booker-book))
   (:layouts
    (main capi:column-layout '(ticket-type start-date arrival-date book)))
   (:default-initargs :title "Flight Booker"))
+
+(defmethod dates-okay-p ((interface flight-booker))
+  (let ((start-date (flight-booker-start-date interface))
+        (arrival-date (flight-booker-arrival-date interface)))
+    (when-let ((start-date-date (get-date start-date))
+               (arrival-date-date (get-date arrival-date)))
+      (>= arrival-date-date start-date-date))))
+
