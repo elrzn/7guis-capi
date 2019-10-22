@@ -38,4 +38,6 @@
        (with-slots (elapsed-seconds progress-bar elapsed-seconds-display slider) interface
          ;; Update elapsed seconds message.
          (setf (capi:display-pane-text elapsed-seconds-display)
-               (format nil "~ds" (incf elapsed-seconds)))))))
+               (format nil "~ds" (incf elapsed-seconds)))
+         ;; Update progress bar.
+         (setf (capi:range-slug-start progress-bar) elapsed-seconds)))))
