@@ -11,4 +11,5 @@
                (:file "1-counter")
                (:file "2-temperature-converter")
                (:file "3-flight-booker")
+               (:file "4-timer")
                (:file "7guis-capi")))
